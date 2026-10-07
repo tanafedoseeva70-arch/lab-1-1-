@@ -1,0 +1,156 @@
+from collections.abc import Sequence
+
+
+def count_vowels(text: str) -> int:
+    """Возвращает количество английских гласных в строке."""
+    vowels = {"a", "e", "i", "o", "u"}
+
+    return sum(
+        character.lower() in vowels
+        for character in text
+    )
+
+
+def has_unique_characters(text: str) -> bool:
+    """Проверяет, что все символы строки уникальны."""
+    return len(text) == len(set(text))
+
+
+def count_one_bits(number: int) -> int:
+    """Возвращает количество единичных битов в числе."""
+    if number < 0:
+        raise ValueError("Number must be non-negative")
+
+    return bin(number).count("1")
+
+
+def multiplicative_persistence(number: int) -> int:
+    """
+    Возвращает количество умножений цифр,
+    необходимых для получения однозначного числа.
+    """
+    if number < 0:
+        raise ValueError("Number must be non-negative")
+
+    count = 0
+
+    while number >= 10:
+        product = 1
+
+        for digit in str(number):
+            product *= int(digit)
+
+        number = product
+        count += 1
+
+    return count
+
+
+def mse(
+    first: Sequence[int | float],
+    second: Sequence[int | float],
+) -> float:
+    """Вычисляет среднюю квадратичную ошибку двух последовательностей."""
+    if len(first) != len(second):
+        raise ValueError("Vectors must have the same length")
+
+    if len(first) == 0:
+        raise ValueError("Vectors must not be empty")
+
+    squared_errors = (
+        (first_value - second_value) ** 2
+        for first_value, second_value in zip(first, second)
+    )
+
+    return sum(squared_errors) / len(first)
+
+
+def prime_factorization(number: int) -> str:
+    """Возвращает разложение положительного числа на простые множители."""
+    if number < 1:
+        raise ValueError("Number must be positive")
+
+    if number == 1:
+        return "(1)"
+
+    factors: list[tuple[int, int]] = []
+    divisor = 2
+    remainder = number
+
+    while divisor * divisor <= remainder:
+        power = 0
+
+        while remainder % divisor == 0:
+            remainder //= divisor
+            power += 1
+
+        if power > 0:
+            factors.append((divisor, power))
+
+        divisor += 1
+
+    if remainder > 1:
+        factors.append((remainder, 1))
+
+    result = []
+
+    for factor, power in factors:
+        if power == 1:
+            result.append(f"({factor})")
+        else:
+            result.append(f"({factor}**{power})")
+
+    return "".join(result)
+
+
+def pyramid(number: int) -> int | str:
+    """
+    Определяет количество полных уровней пирамиды.
+
+    На первом уровне нужен 1 кубик, на втором — 4,
+    на третьем — 9 и так далее.
+    """
+    if number < 1:
+        return "It is impossible"
+
+    total = 0
+    level = 0
+
+    while total < number:
+        level += 1
+        total += level ** 2
+
+    if total == number:
+        return level
+
+    return "It is impossible"
+
+
+def is_balanced_number(number: int) -> bool:
+    """
+    Проверяет, равны ли суммы цифр слева и справа от центра.
+
+    Для числа нечётной длины средняя цифра не учитывается.
+    Для числа чётной длины две средние цифры не учитываются.
+    """
+    if number < 0:
+        raise ValueError("Number must be non-negative")
+
+    digits = str(number)
+    side_length = (len(digits) - 1) // 2
+
+    # Одно- и двузначные числа считаются сбалансированными.
+    if side_length == 0:
+        return True
+
+    left_sum = sum(
+        int(digit)
+        for digit in digits[:side_length]
+    )
+
+    right_sum = sum(
+        int(digit)
+        for digit in digits[-side_length:]
+    )
+
+    return left_sum == right_sum
